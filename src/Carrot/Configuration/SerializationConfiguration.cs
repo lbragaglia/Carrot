@@ -13,16 +13,12 @@ namespace Carrot.Configuration
             new Dictionary<ContentNegotiator.MediaType, ISerializer>();
 
         private readonly IDictionary<Predicate<ContentNegotiator.MediaTypeHeader>, ISerializer> _serializers =
-            new Dictionary<Predicate<ContentNegotiator.MediaTypeHeader>, ISerializer>();
+            new Dictionary<Predicate<ContentNegotiator.MediaTypeHeader>, ISerializer>
+                {
+                    { _ => _.MediaType == DefaultContentType, new JsonSerializer() }
+                };
 
         private IContentNegotiator _negotiator = new ContentNegotiator();
-
-        internal static SerializationConfiguration Default()
-        {
-            var defaultConfig = new SerializationConfiguration();
-            defaultConfig._serializers[_ => _.MediaType == DefaultContentType] = new JsonSerializer();
-            return defaultConfig;
-        }
 
         internal SerializationConfiguration() { }
 
@@ -60,13 +56,14 @@ namespace Carrot.Configuration
 
             var sortedMediaTypes = _negotiator.Negotiate(contentType);
 
-            foreach (var header in sortedMediaTypes)
+            foreach (var header in sortedMediaTypes) {
                 if (_mediaTypeSerializers.ContainsKey(header.MediaType))
                     return _mediaTypeSerializers[header.MediaType];
-                else
-                    foreach (var serializer in _serializers)
-                        if (serializer.Key(header))
-                            return serializer.Value;
+                
+                foreach (var serializer in _serializers)
+                    if (serializer.Key(header))
+                        return serializer.Value;
+            }
 
             return NullSerializer.Instance;
         }

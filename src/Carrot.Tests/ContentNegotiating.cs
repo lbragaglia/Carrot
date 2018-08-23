@@ -50,7 +50,7 @@ namespace Carrot.Tests
         public void DefaultSerializer()
         {
             const String contentType = "application/json";
-            var configuration = SerializationConfiguration.Default();
+            var configuration = new SerializationConfiguration();
             var serializer = configuration.Create(contentType);
             Assert.IsType<JsonSerializer>(serializer);
         }

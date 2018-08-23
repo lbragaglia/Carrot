@@ -87,8 +87,8 @@ namespace Carrot
         protected Byte[] BuildBody(IMessage source, IBasicProperties properties)
         {
             return properties.CreateEncoding()
-                .GetBytes(properties.CreateSerializer(Configuration.SerializationConfiguration)
-                    .Serialize(source.Content));
+                             .GetBytes(properties.CreateSerializer(Configuration.SerializationConfiguration)
+                             .Serialize(source.Content));
         }
 
         protected virtual void OnModelShutdown(Object sender, ShutdownEventArgs args) { }

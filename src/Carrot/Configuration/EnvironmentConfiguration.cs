@@ -11,6 +11,7 @@ namespace Carrot.Configuration
         internal EnvironmentConfiguration()
         {
             IdGenerator = new NewGuid();
+            SerializationConfiguration = new SerializationConfiguration();
         }
 
         internal Uri EndpointUri { get; private set; }
@@ -29,7 +30,7 @@ namespace Carrot.Configuration
 
         internal ILog Log { get; private set; } = new DefaultLog();
 
-        internal SerializationConfiguration SerializationConfiguration { get; private set; } = SerializationConfiguration.Default();
+        internal SerializationConfiguration SerializationConfiguration { get; }
 
         internal Func<IModel, EnvironmentConfiguration, IOutboundChannel> OutboundChannelBuilder { get; private set; } = OutboundChannel.Default();
 
@@ -74,7 +75,6 @@ namespace Carrot.Configuration
             if (configure == null)
                 throw new ArgumentNullException(nameof(configure));
 
-            SerializationConfiguration = new SerializationConfiguration();
             configure(SerializationConfiguration);
         }
 
