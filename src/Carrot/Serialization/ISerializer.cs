@@ -10,4 +10,11 @@ namespace Carrot.Serialization
 
         String Serialize(Object obj);
     }
+
+    public interface ISerializer<T>
+    {
+        object Deserialize(T body, Type type);
+
+        T Serialize(object obj);
+    }
 }

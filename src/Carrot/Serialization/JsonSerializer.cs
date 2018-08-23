@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Carrot.Serialization
 {
-    public class JsonSerializer : ISerializer
+    public class JsonSerializer : ISerializer, ISerializer<string>//, IEncodedTextSerializer
     {
         public JsonSerializerSettings Settings { get; } = new JsonSerializerSettings();
 
@@ -17,9 +17,20 @@ namespace Carrot.Serialization
                                                  Settings);
         }
 
+//        public byte[] Serialize(object obj, Encoding encoding)
+//        {
+//            var e = encoding ?? new UTF8Encoding(true);
+//            return e.GetBytes(Serialize(obj));
+//        }
+
+        public Object Deserialize(String body, Type type)
+        {
+            return JsonConvert.DeserializeObject(body, type, Settings);
+        }
+
         public String Serialize(Object obj)
         {
-            return JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj, Settings);
         }
     }
 }

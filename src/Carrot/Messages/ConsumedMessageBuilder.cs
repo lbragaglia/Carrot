@@ -7,13 +7,13 @@ namespace Carrot.Messages
 {
     internal class ConsumedMessageBuilder : IConsumedMessageBuilder
     {
-        private readonly SerializationConfiguration _serializarionconfiguration;
+        private readonly SerializationConfiguration _serializationConfiguration;
         private readonly IMessageTypeResolver _resolver;
 
-        internal ConsumedMessageBuilder(SerializationConfiguration serializarionconfiguration,
+        internal ConsumedMessageBuilder(SerializationConfiguration serializationConfiguration,
                                         IMessageTypeResolver resolver)
         {
-            _serializarionconfiguration = serializarionconfiguration;
+            _serializationConfiguration = serializationConfiguration;
             _resolver = resolver;
         }
 
@@ -28,7 +28,7 @@ namespace Carrot.Messages
             if (binding is EmptyMessageBinding)
                 return new UnresolvedMessage(args);
 
-            var serializer = context.CreateSerializer(_serializarionconfiguration);
+            var serializer = context.CreateSerializer(_serializationConfiguration);
 
             if (serializer is NullSerializer)
                 return new UnsupportedMessage(args);

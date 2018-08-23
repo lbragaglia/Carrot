@@ -50,7 +50,7 @@ namespace Carrot.Tests
         public void DefaultSerializer()
         {
             const String contentType = "application/json";
-            var configuration = new SerializationConfiguration();
+            var configuration = SerializationConfiguration.Default();
             var serializer = configuration.Create(contentType);
             Assert.IsType<JsonSerializer>(serializer);
         }
@@ -70,6 +70,22 @@ namespace Carrot.Tests
             const String contentType = "application/custom";
             var configuration = new SerializationConfiguration();
             configuration.Map(_ => _.MediaType == "application/custom", new FakeSerializer());
+            var negotiator = new Mock<IContentNegotiator>();
+            var @set = new SortedSet<ContentNegotiator.MediaTypeHeader>();
+            @set.Add(ContentNegotiator.MediaTypeHeader.Parse(contentType));
+            negotiator.Setup(_ => _.Negotiate(contentType))
+                      .Returns(@set);
+            configuration.NegotiateBy(negotiator.Object);
+            var serializer = configuration.Create(contentType);
+            Assert.IsType<FakeSerializer>(serializer);
+        }
+
+        [Fact]
+        public void CustomNegotiationOverrideDefault()
+        {
+            const String contentType = "application/json";
+            var configuration = new SerializationConfiguration();
+            configuration.Map(_ => _.MediaType == "application/json", new FakeSerializer());
             var negotiator = new Mock<IContentNegotiator>();
             var @set = new SortedSet<ContentNegotiator.MediaTypeHeader>();
             @set.Add(ContentNegotiator.MediaTypeHeader.Parse(contentType));
