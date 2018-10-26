@@ -81,19 +81,31 @@ namespace Carrot.Tests
         }
 
         [Fact]
-        public void CustomNegotiationOverrideDefault()
+        public void MediaTypeMappingOverridesDefaultContentTypeSerializationConfiguration()
         {
             const String contentType = "application/json";
             var configuration = new SerializationConfiguration();
-            configuration.Map(_ => _.MediaType == "application/json", new FakeSerializer());
-            var negotiator = new Mock<IContentNegotiator>();
-            var @set = new SortedSet<ContentNegotiator.MediaTypeHeader>();
-            @set.Add(ContentNegotiator.MediaTypeHeader.Parse(contentType));
-            negotiator.Setup(_ => _.Negotiate(contentType))
-                      .Returns(@set);
-            configuration.NegotiateBy(negotiator.Object);
-            var serializer = configuration.Create(contentType);
-            Assert.IsType<FakeSerializer>(serializer);
+            var expectedInstance = new FakeSerializer();
+            configuration.Map("application/json", expectedInstance);
+
+            var actualSerializer = configuration.Create(contentType);
+            
+            Assert.Same(expectedInstance, actualSerializer);
+        }
+
+        [Fact]
+        public void MediaTypeMappingOverridesMediaTypeHeaderPredicateMapping()
+        {
+            const String contentType = "application/custom";
+            var configuration = new SerializationConfiguration();
+            var overriddenInstance = new FakeSerializer();
+            var expectedInstance = new FakeSerializer();
+            configuration.Map(_ => _.MediaType == "application/custom", overriddenInstance);
+            configuration.Map("application/custom", expectedInstance);
+
+            var actualSerializer = configuration.Create(contentType);
+
+            Assert.Same(expectedInstance, actualSerializer);
         }
 
         internal class FakeSerializer : ISerializer

@@ -13,8 +13,8 @@ namespace Carrot.Serialization
 
     public interface ISerializer<T>
     {
-        object Deserialize(T body, Type type);
+        TTo Deserialize<TTo>(T serialized);
 
-        T Serialize(object obj);
+        T Serialize<TFrom>(TFrom instance);
     }
 }

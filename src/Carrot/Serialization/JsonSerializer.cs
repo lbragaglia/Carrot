@@ -17,20 +17,22 @@ namespace Carrot.Serialization
                                                  Settings);
         }
 
+        public string Serialize(object obj) => Serialize<object>(obj);
+
 //        public byte[] Serialize(object obj, Encoding encoding)
 //        {
 //            var e = encoding ?? new UTF8Encoding(true);
 //            return e.GetBytes(Serialize(obj));
 //        }
 
-        public Object Deserialize(String body, Type type)
+        public T Deserialize<T>(string serialized)
         {
-            return JsonConvert.DeserializeObject(body, type, Settings);
+            return JsonConvert.DeserializeObject<T>(serialized, Settings);
         }
 
-        public String Serialize(Object obj)
+        public string Serialize<T>(T instance)
         {
-            return JsonConvert.SerializeObject(obj, Settings);
+            return JsonConvert.SerializeObject(instance, Settings);
         }
     }
 }

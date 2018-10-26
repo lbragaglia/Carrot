@@ -13,7 +13,7 @@ namespace Carrot.Tests
     public class ConsumingMessages
     {
         [Fact]
-        public void ConsumingSuccesfully()
+        public void ConsumingSuccessfully()
         {
             var consumer = new FakeConsumer(_ => Task.Factory.StartNew(() => { }));
             var result = new ConsumedMessage(new Foo(),
